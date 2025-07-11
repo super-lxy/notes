@@ -26,6 +26,10 @@
    Windows 10 用户 需要执行此命令，否则默认使用 WSL1。
    ```
 
+4. 重启电脑
+
+   以上命令执行完成后，请重启电脑，以确保所有更改生效。
+
 ### 二、WSL2安装Ubuntu-22.04至 `D盘` （方法一|推荐）
 
 1. 创建文件夹![image-20250612143410098](WSL2安装.assets/image-20250612143410098.png)
@@ -42,11 +46,61 @@
 
         ![image-20250612143808219](WSL2安装.assets/image-20250612143808219.png)
 
-    2. 安装 **Ubuntu-22.04** ：
+    2. 安装 **Ubuntu-20.04** ：
 
-        >wsl --install -d Ubuntu-22.04
+        >wsl --install -d Ubuntu-20.04
 
+    ​					![image-20250711171000053](D:\software\Typora\Note\notes-main\llm\WSL2安装.assets\image-20250711171000053.png)		
 
+    3. 安装完毕后会要求你创建一个新用户，按照提示输入用户名和密码即可，此时已经安装成功了。然后按 `Ctrl + D` 退出即可
+
+       ![image-20250711172502523](WSL2安装.assets/image-20250711172502523.png)
+
+    4. 导出 **Ubuntu-20.04** 为 `.tar` 文件
+
+       ```powershell
+       wsl --export Ubuntu-20.04 D:\WSL\Ubuntu-20.04\Ubuntu-20.04.tar
+       ```
+
+       ![image-20250711172920725](WSL2安装.assets/image-20250711172920725.png)
+
+       这会下载 Ubuntu-20.04 并将其导出到 `D:\WSL\Ubuntu-20.04\Ubuntu-20.04.tar`，然后可以执行`ls D:\WSL\Ubuntu-20.04`查看`Ubuntu-20.04.tar`已经成功导出。
+
+    5. 取消注册原有的 Ubuntu-20.04，如果你已经安装了 Ubuntu-20.04（默认在 `C` 盘），可以将其从 WSL 注销：
+
+       ```powershell
+       wsl --unregister Ubuntu-20.04
+       ```
+
+       ![image-20250711173139007](WSL2安装.assets/image-20250711173139007.png)
+
+3. 导入 Ubuntu-20.04 到 D 盘
+
+    1. 运行以下命令，将 Ubuntu-20.04 重新导入到 `D:\WSL\Ubuntu-20.04`：
+
+       ```powershell
+       wsl --import Ubuntu-20.04 D:\WSL\Ubuntu-20.04 D:\WSL\Ubuntu-20.04\Ubuntu-20.04.tar --version 2
+       ```
+
+       ![image-20250711173441290](WSL2安装.assets/image-20250711173441290.png)
+
+       这将会把 `Ubuntu-20.04` 安装到 `D` 盘，而不是默认的 `C` 盘，如图所示安装完毕。
+
+       ![image-20250711191844113](WSL2安装.assets/image-20250711191844113.png)
+
+       此时可以看到Ubuntu20.04已经成功安装
+
+    2. 在 `D:\WSL\Ubuntu-20.04` 目录下，WSL2 发行版的文件存储在一个 **虚拟磁盘映像文件（ext4.vhdx）** 中，该文件用于存储整个 Ubuntu-20.04 文件系统，如下图所示：
+
+       ![image-20250711192052264](WSL2安装.assets/image-20250711192052264.png)
+
+    3. 启动Ubuntu20.04
+
+       ```powershell
+       wsl -d Ubuntu-22.04
+       ```
+
+       
 
 
 
@@ -62,14 +116,16 @@
 
         **找到名称匹配一致的版本**的链接,注意后缀应该**是.appxbundle**的链接(bundle表示包含所有相关文件)。**点击上图下方的超链接即可自动下载**<img src="WSL2安装.assets/image-20250612154405618.png" alt="image-20250612154405618" style="zoom:67%;" />
 
-             3. 下载完成后，将文件移动到目标目录：`D:\WSL\Ubuntu-20.04\`![image-20250613110300435](WSL2安装.assets/image-20250613110300435.png)
+         3. 下载完成后，将文件移动到目标目录：`D:\WSL\Ubuntu-20.04\`
+
+       ![image-20250613110300435](WSL2安装.assets/image-20250613110300435.png)
 
    3. 解压`.appx` 文件
 
       1. 在`D:\WSL\Ubuntu-22.04`目录下以管理员权限打开PowerShell
 
       2. Windows 不支持直接运行 `.appx`，所以你需要手动解压，继续运行：
-
+   
           ```sh
            Rename-Item .\CanonicalGroupLimited.Ubuntu22.04LTS_2204.5.10021.0_neutral_~_79rhkp1fndgsc.AppxBundle Ubuntu-22.04.zip
            Expand-Archive .\Ubuntu-22.04.zip .\Extracted\
@@ -80,7 +136,7 @@
           效果：![image-20250613111014317](WSL2安装.assets/image-20250613111014317.png)
 
    4. 进入 `D:\WSL\Ubuntu-22.04\Extracted` 目录，执行：
-
+   
       ```shell
       cd Extracted
       Rename-Item .\Ubuntu_2204.5.10021.0_x64.appx Ubuntu_22.04.zip
@@ -90,7 +146,7 @@
       命令：![image-20250613111823771](WSL2安装.assets/image-20250613111823771.png)
 
       效果：如图所示成功解压出 **Ubuntu_x64** 文件夹![image-20250613111851011](WSL2安装.assets/image-20250613111851011.png)
-
+   
    5. 导入 WSL 并启动Ubuntu
    
        1. 进入 **Ubuntu_x64** 目录，手动导入 WSL，在 `D:\WSL\Ubuntu-22.04\Extracted\Ubuntu_x64` 目录下执行：
@@ -173,6 +229,7 @@
 
     ```cmd
     wsl -d Ubuntu-22.04
+    wsl -d Ubuntu-22.04 -u llm          #以llm 用户身份登录
     ```
 
 - 更改默认登录用户
@@ -183,11 +240,13 @@
     sudo vi /etc/wsl.conf
     
     #/etc/wsl.conf 文件内容
-    [boot]                                                                                                       systemd=true                                                                                                 
+    [boot]                                                                                                       
+    systemd=true                                                                                                 
     #增加如下内容
-    [user]                                                                                                       default=llm 
+    [user]                                                                                                       
+    default=llm 
     ```
-
+    
     
 
 ### 五、ZSH安装

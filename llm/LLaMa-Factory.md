@@ -24,6 +24,7 @@ conda create -n llama_factory python=3.10
 conda activate llama_factory
 cd LLaMA-Factory
 pip install -e ".[torch,metrics]"
+
 #安装cuda版本pytorch
 pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu126
 
